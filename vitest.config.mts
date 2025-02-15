@@ -7,6 +7,7 @@ export default defineConfig({
     environment: 'node',
     coverage: {
       exclude: [
+        'src/server.ts',
         'src/index.ts',
         'knexfile.ts',
         'src/db.ts',
