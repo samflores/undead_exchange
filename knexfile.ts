@@ -9,6 +9,7 @@ const config: Record<string, Knex.Config> = {
     migrations: {
       tableName: 'knex_migrations',
       directory: './db/migrations',
+      extension: 'ts',
     },
     seeds: {
       directory: './db/seeds',
@@ -23,6 +24,7 @@ const config: Record<string, Knex.Config> = {
     migrations: {
       tableName: 'knex_migrations',
       directory: './db/migrations',
+      extension: 'ts',
     },
     seeds: {
       directory: './db/seeds',

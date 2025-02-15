@@ -1,3 +1,4 @@
+import { resolve } from 'path';
 import { coverageConfigDefaults, defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -18,5 +19,11 @@ export default defineConfig({
         lines: 90,
       }
     }
+  },
+  resolve: {
+    alias: {
+      src: resolve(__dirname, 'src'),
+      tests: resolve(__dirname, 'tests'),
+    },
   },
 });
