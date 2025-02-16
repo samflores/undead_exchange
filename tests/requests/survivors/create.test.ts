@@ -41,7 +41,7 @@ describe('CREATE action', () => {
       await assertCount(input, { changedBy: 1 });
     });
 
-    it('returns the created user', async () => {
+    it('returns the created survivor', async () => {
       const response = await makeRequest(input);
 
       const jsonResponse = response.json<Survivor>();
