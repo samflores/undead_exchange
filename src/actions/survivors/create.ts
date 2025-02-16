@@ -2,20 +2,20 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { Gender, Survivor, TradeItem } from 'src/models';
 
 type Input = {
-  name?: string;
-  age?: number;
-  gender?: string;
-  latitude?: number;
-  longitude?: number;
-  items?: Array<{
+  name: string;
+  age: number;
+  gender: string;
+  latitude: number;
+  longitude: number;
+  items: Array<{
     name: string;
     quantity: number;
   }>
 };
 
 type TransformedInput = Omit<Input, 'gender' | 'items'> & {
-  gender?: Gender;
-  items?: Array<{
+  gender: Gender;
+  items: Array<{
     id: number;
     quantity: number;
   }>;
@@ -23,19 +23,19 @@ type TransformedInput = Omit<Input, 'gender' | 'items'> & {
 
 type Request = FastifyRequest<{ Body: Input }>;
 
-class UnknownItems extends Error {
+class UnknownItemsError extends Error {
   constructor(itemsNames: string[]) {
     super(`unknown item${itemsNames.length == 1 ? '' : 's'}: ${itemsNames.join(', ')}`);
   }
 }
 
-class MissingItems extends Error {
+class MissingItemsError extends Error {
   constructor() {
     super('must provide at least one item');
   }
 }
 
-class InvalidItemQuantity extends Error {
+class InvalidItemQuantityError extends Error {
   constructor(invalid: { name: string, quantity: number }[]) {
     super(`all quantities must be >= 0, got: ${invalid.map(i => `${i.quantity} for ${i.name}`).join(', ')}`);
   }
@@ -51,7 +51,7 @@ export default async (
         Survivor.query(trx).upsertGraph(normalizedInput, { relate: true })))
     .then((user) => reply.code(201).send(user))
     .catch((error) => {
-      if (error instanceof UnknownItems || error instanceof InvalidItemQuantity || error instanceof MissingItems) {
+      if (error instanceof UnknownItemsError || error instanceof InvalidItemQuantityError || error instanceof MissingItemsError) {
         return reply.code(400).send({ message: error.message });
       }
       return reply.send(error);
@@ -75,7 +75,7 @@ const normalizeGender = (gender: Input['gender']) =>
 
 const normalizeItems = async (items: Input['items']) => {
   if (!items || items.length === 0) {
-    throw new MissingItems();
+    throw new MissingItemsError();
   }
 
   const itemNames = items!.map(item => item.name);
@@ -89,7 +89,7 @@ const normalizeItems = async (items: Input['items']) => {
 
   const unknownItems = items!.filter(item => !existingByName[item.name]).map(item => item.name);
   if (unknownItems.length > 0) {
-    throw new UnknownItems(unknownItems);
+    throw new UnknownItemsError(unknownItems);
   }
 
   const normalizeItems = items!.map(item => ({
@@ -99,7 +99,7 @@ const normalizeItems = async (items: Input['items']) => {
 
   const invalidQuantities = items.filter(item => existingByName[item.name] && item.quantity <= 0);
   if (invalidQuantities.length > 0) {
-    throw new InvalidItemQuantity(invalidQuantities);
+    throw new InvalidItemQuantityError(invalidQuantities);
   }
 
   return normalizeItems;

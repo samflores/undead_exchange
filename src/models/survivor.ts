@@ -16,7 +16,7 @@ export enum Gender {
 class Survivor extends Model {
   static tableName = 'survivors';
 
-  id?: number;
+  id!: number;
   name!: string;
   age!: number;
   gender!: Gender;
