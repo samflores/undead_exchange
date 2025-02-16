@@ -31,7 +31,7 @@ describe('TradeItem', () => {
     const input = { ...validInput, name: undefined };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError("name: must have required property 'name'");
+      await expect(saveRecord(input)).rejects.toThrowError("name: must have required property 'name'");
     });
   });
 
@@ -39,7 +39,7 @@ describe('TradeItem', () => {
     const input = { ...validInput, name: '' };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError('name: must match pattern "[^\\s]"');
+      await expect(saveRecord(input)).rejects.toThrowError('name: must match pattern "[^\\s]"');
     });
   });
 
@@ -47,7 +47,7 @@ describe('TradeItem', () => {
     const input = { ...validInput, name: '   ' };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError('name: must match pattern "[^\\s]"');
+      await expect(saveRecord(input)).rejects.toThrowError('name: must match pattern "[^\\s]"');
     });
   });
 
@@ -55,7 +55,7 @@ describe('TradeItem', () => {
     const input = { ...validInput, points: undefined };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError("points: must have required property 'points'");
+      await expect(saveRecord(input)).rejects.toThrowError("points: must have required property 'points'");
     });
   });
 
@@ -63,7 +63,7 @@ describe('TradeItem', () => {
     const input = { ...validInput, points: -1 };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError('points: must be >= 0');
+      await expect(saveRecord(input)).rejects.toThrowError('points: must be >= 0');
     });
   });
 
@@ -71,7 +71,7 @@ describe('TradeItem', () => {
     const input = { ...validInput, points: 1.3 };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError('points: must be integer');
+      await expect(saveRecord(input)).rejects.toThrowError('points: must be integer');
     });
   });
 
