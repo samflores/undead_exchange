@@ -2,7 +2,6 @@ import { Model } from 'objection';
 
 export enum Gender {
   Male = 'male',
-  Feale = 'female',
   NonBinary = 'non-binary',
   Genderqueer = 'genderqueer',
   Genderfluid = 'genderfluid',
