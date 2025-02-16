@@ -1,8 +1,9 @@
 import { Model } from 'objection';
+import TradeItem from './trade_item';
 
 export enum Gender {
   Male = 'male',
-  Feale = 'female',
+  Female = 'female',
   NonBinary = 'non-binary',
   Genderqueer = 'genderqueer',
   Genderfluid = 'genderfluid',
@@ -22,10 +23,12 @@ class Survivor extends Model {
   latitude!: number;
   longitude!: number;
 
+  items!: Array<Partial<TradeItem & { quantity: number }>>;
+
   static jsonSchema = {
     type: 'object',
     required: [
-      'name', 'age', 'gender', 'latitude', 'longitude'
+      'name', 'age', 'gender', 'latitude', 'longitude',
     ],
     properties: {
       id: { type: 'integer' },
@@ -36,9 +39,38 @@ class Survivor extends Model {
         enum: Object.values(Gender),
       },
       latitude: { type: 'number', minimum: -90, maximum: 90 },
-      longitude: { type: 'number', minimum: -180, maximum: 180 }
+      longitude: { type: 'number', minimum: -180, maximum: 180 },
+      items: {
+        type: 'array',
+        minItems: 1,
+        items: {
+          type: 'object',
+          required: ['name', 'points', 'quantity'],
+          properties: {
+            name: { type: 'string', minLength: 1, maxLength: 255, pattern: '[^\\s]' },
+            points: { type: 'integer', minimum: 0 },
+            quantity: { type: 'integer', minimum: 1 },
+          }
+        }
+      }
     }
   };
+
+  static relationMappings = () => ({
+    items: {
+      relation: Model.ManyToManyRelation,
+      modelClass: TradeItem,
+      join: {
+        from: 'survivors.id',
+        through: {
+          from: 'ownership.survivor_id',
+          to: 'ownership.item_id',
+          extra: ['quantity']
+        },
+        to: 'trade_items.id'
+      }
+    }
+  });
 }
 
 export default Survivor;

@@ -19,7 +19,7 @@ describe('Survivor', () => {
     });
 
     it('returns the created survivor', async () => {
-      const survivor = await Survivor.query().insert(input);
+      const survivor = await saveRecord(input);
 
       expect(survivor).toEqual(
         expect.objectContaining({
@@ -30,11 +30,45 @@ describe('Survivor', () => {
     });
   });
 
+  describe('when items are present', () => {
+    const input = {
+      ...validInput,
+      items: [
+        {
+          name: 'Crossbow',
+          points: 10,
+          quantity: 1,
+        }
+      ]
+    };
+
+    it('saves the record', async () => {
+      assertCount(input, { changedBy: 1 });
+    });
+
+    it('returns the created survivor and its items', async () => {
+      const survivor = await saveRecord(input);
+
+      expect(survivor).toEqual(
+        expect.objectContaining({
+          ...input,
+          id: expect.any(Number),
+          items: expect.arrayContaining(
+            input.items.map(item => expect.objectContaining({
+              ...item,
+              id: expect.any(Number)
+            }))
+          ),
+        })
+      );
+    });
+  });
+
   describe('when the name is missing', () => {
     const input = { ...validInput, name: undefined };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError("name: must have required property 'name'");
+      await expect(saveRecord(input)).rejects.toThrowError("name: must have required property 'name'");
     });
   });
 
@@ -42,7 +76,7 @@ describe('Survivor', () => {
     const input = { ...validInput, name: '' };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError('name: must match pattern "[^\\s]"');
+      await expect(saveRecord(input)).rejects.toThrowError('name: must match pattern "[^\\s]"');
     });
   });
 
@@ -50,7 +84,7 @@ describe('Survivor', () => {
     const input = { ...validInput, name: '   ' };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError('name: must match pattern "[^\\s]"');
+      await expect(saveRecord(input)).rejects.toThrowError('name: must match pattern "[^\\s]"');
     });
   });
 
@@ -58,7 +92,7 @@ describe('Survivor', () => {
     const input = { ...validInput, age: undefined };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError("age: must have required property 'age'");
+      await expect(saveRecord(input)).rejects.toThrowError("age: must have required property 'age'");
     });
   });
 
@@ -66,7 +100,7 @@ describe('Survivor', () => {
     const input = { ...validInput, age: -1 };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError('age: must be >= 0');
+      await expect(saveRecord(input)).rejects.toThrowError('age: must be >= 0');
     });
   });
 
@@ -74,7 +108,7 @@ describe('Survivor', () => {
     const input = { ...validInput, gender: undefined };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError("gender: must have required property 'gender'");
+      await expect(saveRecord(input)).rejects.toThrowError("gender: must have required property 'gender'");
     });
   });
 
@@ -82,7 +116,7 @@ describe('Survivor', () => {
     const input = { ...validInput, latitude: undefined };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError("latitude: must have required property 'latitude'");
+      await expect(saveRecord(input)).rejects.toThrowError("latitude: must have required property 'latitude'");
     });
   });
 
@@ -90,7 +124,7 @@ describe('Survivor', () => {
     const input = { ...validInput, latitude: -91 };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError('latitude: must be >= -90');
+      await expect(saveRecord(input)).rejects.toThrowError('latitude: must be >= -90');
     });
   });
 
@@ -98,7 +132,7 @@ describe('Survivor', () => {
     const input = { ...validInput, latitude: 91 };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError('latitude: must be <= 90');
+      await expect(saveRecord(input)).rejects.toThrowError('latitude: must be <= 90');
     });
   });
 
@@ -106,7 +140,7 @@ describe('Survivor', () => {
     const input = { ...validInput, longitude: undefined };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError("longitude: must have required property 'longitude'");
+      await expect(saveRecord(input)).rejects.toThrowError("longitude: must have required property 'longitude'");
     });
   });
 
@@ -114,7 +148,7 @@ describe('Survivor', () => {
     const input = { ...validInput, longitude: -181 };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError('longitude: must be >= -180');
+      await expect(saveRecord(input)).rejects.toThrowError('longitude: must be >= -180');
     });
   });
 
@@ -122,26 +156,26 @@ describe('Survivor', () => {
     const input = { ...validInput, longitude: 181 };
 
     it('does not save the record', async () => {
-      expect(saveRecord(input)).rejects.toThrowError('longitude: must be <= 180');
+      await expect(saveRecord(input)).rejects.toThrowError('longitude: must be <= 180');
     });
   });
 
-  const countRecords = async (input: Partial<Survivor>) =>
-    Survivor.query().where(input).resultSize();
+  const countRecords = async (input: Partial<Survivor>) => {
+    const { items, ...survivorInput } = input;
+    return Survivor.query().where(survivorInput).resultSize();
+  };
 
   const assertCount = async (input: Partial<Survivor>, { changedBy }: { changedBy: number }) => {
     const initialCount = await countRecords(input);
-    console.log('initialCount', initialCount);
 
     await saveRecord(input);
 
     const finalCount = await countRecords(input);
-    console.log('finalCount', finalCount);
 
     expect(finalCount).toBe(initialCount + changedBy);
   };
 
   const saveRecord = async (input: Partial<Survivor>) =>
-    Survivor.query().insert(input);
+    Survivor.query().insertGraphAndFetch(input);
 
 });
