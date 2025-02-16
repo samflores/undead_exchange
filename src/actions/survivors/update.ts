@@ -1,3 +1,4 @@
+import { ExtraFieldsError, RequiredFieldError } from 'src/actions/errors';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { NotFoundError } from 'objection';
 import { Survivor } from 'src/models';
@@ -8,18 +9,6 @@ type Input = {
 };
 
 type Request = FastifyRequest<{ Body: Input, Params: { id: number } }>;
-
-class RequiredFieldError extends Error {
-  constructor(field: string) {
-    super(`${field} is required`);
-  }
-}
-
-class ExtraFieldsError extends Error {
-  constructor(fields: string[]) {
-    super(`unexpected fields: ${fields.join(', ')}`);
-  }
-}
 
 export default async (
   { body: input, params: { id } }: Request,
@@ -55,4 +44,4 @@ const normalizeInput = async (input: Input) => {
   }
 
   return input;
-}
+};

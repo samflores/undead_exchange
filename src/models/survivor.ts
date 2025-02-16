@@ -22,8 +22,10 @@ class Survivor extends Model {
   gender!: Gender;
   latitude!: number;
   longitude!: number;
+  infected!: boolean;
 
   items!: Array<Partial<TradeItem & { quantity: number }>>;
+  reportsReceived!: Array<Partial<Survivor & { created_at: Date, notes: string }>>;
 
   static jsonSchema = {
     type: 'object',
@@ -55,6 +57,32 @@ class Survivor extends Model {
           extra: ['quantity']
         },
         to: 'trade_items.id'
+      }
+    },
+    reportsMade: {
+      relation: Model.ManyToManyRelation,
+      modelClass: Survivor,
+      join: {
+        from: 'survivors.id',
+        through: {
+          from: 'infection_reports.reporter_id',
+          to: 'infection_reports.reported_id',
+          extra: ['created_at', 'notes']
+        },
+        to: 'survivors.id',
+      }
+    },
+    reportsReceived: {
+      relation: Model.ManyToManyRelation,
+      modelClass: Survivor,
+      join: {
+        from: 'survivors.id',
+        through: {
+          from: 'infection_reports.reported_id',
+          to: 'infection_reports.reporter_id',
+          extra: ['created_at', 'notes']
+        },
+        to: 'survivors.id',
       }
     }
   });

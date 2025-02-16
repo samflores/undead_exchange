@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { Gender, Survivor, TradeItem } from 'src/models';
+import { InvalidItemQuantityError, MissingItemsError, UnknownItemsError } from 'src/actions/errors';
 
 type Input = {
   name: string;
@@ -22,24 +23,6 @@ type TransformedInput = Omit<Input, 'gender' | 'items'> & {
 };
 
 type Request = FastifyRequest<{ Body: Input }>;
-
-class UnknownItemsError extends Error {
-  constructor(itemsNames: string[]) {
-    super(`unknown item${itemsNames.length == 1 ? '' : 's'}: ${itemsNames.join(', ')}`);
-  }
-}
-
-class MissingItemsError extends Error {
-  constructor() {
-    super('must provide at least one item');
-  }
-}
-
-class InvalidItemQuantityError extends Error {
-  constructor(invalid: { name: string, quantity: number }[]) {
-    super(`all quantities must be >= 0, got: ${invalid.map(i => `${i.quantity} for ${i.name}`).join(', ')}`);
-  }
-}
 
 export default async (
   { body: input }: Request,
