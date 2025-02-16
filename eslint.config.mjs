@@ -1,8 +1,8 @@
 // @ts-check
 
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
 import stylistic from '@stylistic/eslint-plugin';
+import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -13,10 +13,19 @@ export default tseslint.config(
     },
     rules: {
       '@stylistic/semi': ['warn', 'always'],
-      '@stylistic/quotes': ['warn', 'single', { avoidEscape: true }],
+      '@stylistic/quotes': ['warn', 'single', { 'avoidEscape': true }],
       '@stylistic/no-multiple-empty-lines': ['warn', { 'max': 1 }],
       '@stylistic/comma-dangle': ['warn', 'only-multiline'],
-      '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }],
+      '@stylistic/curly-newline': ['warn', 'always'],
+      'curly': ['warn', 'all'],
+      'sort-imports': ['warn', {
+        'ignoreCase': false,
+        'ignoreDeclarationSort': false,
+        'ignoreMemberSort': false,
+        'memberSyntaxSortOrder': ['none', 'all', 'multiple', 'single'],
+        'allowSeparatedGroups': false
+      }],
+      '@typescript-eslint/no-unused-vars': ['error', { 'ignoreRestSiblings': true }],
     }
   }
 );

@@ -1,5 +1,5 @@
 import 'tests/setup';
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import TradeItem from 'src/models/trade_item';
 
 describe('TradeItem', () => {

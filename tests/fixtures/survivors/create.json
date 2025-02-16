@@ -1,0 +1,17 @@
+{
+  "name": "Carl Grimes",
+  "age": 16,
+  "gender": "male",
+  "latitude": 34.0522,
+  "longitude": -118.2437,
+  "items": [
+    {
+      "name": "Fiji Water",
+      "quantity": 3
+    },
+    {
+      "name": "Campbell Soup",
+      "quantity": 2
+    }
+  ]
+}

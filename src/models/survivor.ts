@@ -40,19 +40,6 @@ class Survivor extends Model {
       },
       latitude: { type: 'number', minimum: -90, maximum: 90 },
       longitude: { type: 'number', minimum: -180, maximum: 180 },
-      items: {
-        type: 'array',
-        minItems: 1,
-        items: {
-          type: 'object',
-          required: ['name', 'points', 'quantity'],
-          properties: {
-            name: { type: 'string', minLength: 1, maxLength: 255, pattern: '[^\\s]' },
-            points: { type: 'integer', minimum: 0 },
-            quantity: { type: 'integer', minimum: 1 },
-          }
-        }
-      }
     }
   };
 

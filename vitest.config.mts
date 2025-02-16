@@ -1,5 +1,5 @@
-import { resolve } from 'path';
 import { coverageConfigDefaults, defineConfig } from 'vitest/config';
+import { resolve } from 'path';
 
 export default defineConfig({
   test: {
@@ -7,10 +7,9 @@ export default defineConfig({
     environment: 'node',
     coverage: {
       exclude: [
-        'src/server.ts',
         'src/index.ts',
         'knexfile.ts',
-        'src/db.ts',
+        'db/seeds/*.ts',
         ...coverageConfigDefaults.exclude
       ],
       thresholds: {
