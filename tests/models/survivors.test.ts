@@ -131,12 +131,10 @@ describe('Survivor', () => {
 
   const assertCount = async (input: Partial<Survivor>, { changedBy }: { changedBy: number }) => {
     const initialCount = await countRecords(input);
-    console.log('initialCount', initialCount);
 
     await saveRecord(input);
 
     const finalCount = await countRecords(input);
-    console.log('finalCount', finalCount);
 
     expect(finalCount).toBe(initialCount + changedBy);
   };
