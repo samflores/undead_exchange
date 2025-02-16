@@ -19,12 +19,46 @@ describe('Survivor', () => {
     });
 
     it('returns the created survivor', async () => {
-      const survivor = await Survivor.query().insertGraphAndFetch(input);
+      const survivor = await saveRecord(input);
 
       expect(survivor).toEqual(
         expect.objectContaining({
           ...input,
           id: expect.any(Number),
+        })
+      );
+    });
+  });
+
+  describe('when items are present', () => {
+    const input = {
+      ...validInput,
+      items: [
+        {
+          name: 'Crossbow',
+          points: 10,
+          quantity: 1,
+        }
+      ]
+    };
+
+    it('saves the record', async () => {
+      assertCount(input, { changedBy: 1 });
+    });
+
+    it('returns the created survivor and its items', async () => {
+      const survivor = await saveRecord(input);
+
+      expect(survivor).toEqual(
+        expect.objectContaining({
+          ...input,
+          id: expect.any(Number),
+          items: expect.arrayContaining(
+            input.items.map(item => expect.objectContaining({
+              ...item,
+              id: expect.any(Number)
+            }))
+          ),
         })
       );
     });
@@ -142,6 +176,6 @@ describe('Survivor', () => {
   };
 
   const saveRecord = async (input: Partial<Survivor>) =>
-    Survivor.query().insert(input);
+    Survivor.query().insertGraphAndFetch(input);
 
 });
