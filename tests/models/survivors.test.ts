@@ -1,6 +1,6 @@
 import 'tests/setup';
-import { describe, it, expect } from 'vitest';
 import Survivor, { Gender } from 'src/models/survivor';
+import { describe, expect, it } from 'vitest';
 
 describe('Survivor', () => {
   const validInput = {

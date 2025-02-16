@@ -1,10 +1,9 @@
 import fastify from 'fastify';
+import survivors from './routes/survivors';
 
 const shouldLog = process.env.NODE_ENV !== 'test';
 const server = fastify({ logger: shouldLog });
 
-server.get('/ping', async () => {
-  return 'pong';
-});
+server.register(survivors, { prefix: '/survivors' });
 
 export default server;
