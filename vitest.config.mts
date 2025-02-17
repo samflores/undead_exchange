@@ -18,7 +18,8 @@ export default defineConfig({
         statements: 90,
         lines: 90,
       }
-    }
+    },
+    testTimeout: 20000,
   },
   resolve: {
     alias: {

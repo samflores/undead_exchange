@@ -33,3 +33,31 @@ export class SelfReportError extends Error {
     super(`invalid reporterId: ${id}`);
   }
 }
+type InsufficientInventoryErrorArgs = { survivorId: number, itemId: number, offered: number, owned: number };
+
+export class InsuficintInventoryError extends Error {
+  constructor(
+    { survivorId, itemId, offered, owned }: InsufficientInventoryErrorArgs
+  ) {
+    super(
+      `survivor ${survivorId} does not have enough of item ${itemId} (requested ${offered}, owned ${owned})`
+    );
+  }
+}
+
+type SurvivorTotalOffer = { id: number, offered: number };
+
+export class TradeValueMismatchError extends Error {
+  constructor(survivor1: SurvivorTotalOffer, survivor2: SurvivorTotalOffer) {
+    const msg1 = `survivor ${survivor1.id} total ${survivor1.offered}`;
+    const msg2 = `survivor ${survivor2.id} total ${survivor2.offered}`;
+
+    super(`trade points do not match: ${msg1}, ${msg2}`);
+  }
+}
+
+export class TradeItemsNotFoundError extends Error {
+  constructor(ids: number[]) {
+    super(`trade items not found: ${ids.join(', ')}`);
+  }
+}
