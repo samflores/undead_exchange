@@ -76,7 +76,7 @@ To run the tests (with coverage), execute:
 
 2. Update Survivor Location
 
-- **Endpoint**: PATCH /survivors/<id>
+- **Endpoint**: PATCH /survivors/:id
 - **Description**: Updates the location (latitude and longitude) of an existing survivor. Other fields (including inventory) cannot be modified via this endpoint.
 - **Request Body Example**:
    ```json
@@ -100,7 +100,7 @@ To run the tests (with coverage), execute:
 
 3. Report Infection
 
-- **Endpoint**: POST /survivors/<id>/infection-reports
+- **Endpoint**: POST /survivors/:id/infection-reports
 - **Description**: Flags a survivor as infected by creating an infection report. The request includes a reporterId (the survivor making the report) and optional notes. When a survivor receives 5 reports, a database trigger automatically sets their infected flag to true.
 - **Request Body Example**:
    ```json
