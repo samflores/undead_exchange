@@ -148,7 +148,8 @@ To run the tests (with coverage), execute:
   {
     "message": "Trade successful"
   }
-```
+  ```
+
 ## Task: Add Swagger Documentation
 
 **Objective**: Enhance the API documentation by integrating Swagger (OpenAPI) to provide complete interactive API documentation for all endpoints using [fastify-swagger](https://github.com/fastify/fastify-swagger).
